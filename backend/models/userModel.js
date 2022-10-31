@@ -34,6 +34,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  admin: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 // static signup method
