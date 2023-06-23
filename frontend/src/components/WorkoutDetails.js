@@ -6,9 +6,10 @@ import { useState } from "react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 const WorkoutDetails = ({ workout }) => {
-  const [title, setTitle] = useState("");
-  const [reps, setReps] = useState();
-  const [load, setLoad] = useState();
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [title, setTitle] = useState(workout.title);
+  const [reps, setReps] = useState(workout.reps);
+  const [load, setLoad] = useState(workout.load);
   const { dispatch } = useWorkoutsContext();
   const { user } = useAuthContext();
 
@@ -19,19 +20,21 @@ const WorkoutDetails = ({ workout }) => {
 
     const data = { title, reps, load };
 
-    const response = await fetch("/api/workouts/" + workout._id, data, {
+    const response = await fetch("/api/workouts/" + workout._id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,
       },
+      body: JSON.stringify(data),
     });
 
     const json = await response.json();
 
     if (response.ok) {
       dispatch({ type: "EDIT_WORKOUT", payload: json });
+      setIsEditMode(false); // Exit edit mode after successful edit
     }
   };
 
@@ -55,22 +58,54 @@ const WorkoutDetails = ({ workout }) => {
 
   return (
     <div className="workout-details">
-      <div className="titleDiv">
-        <h4 onChange={(e) => setTitle(e.target.value)}>{workout.title}</h4>
+      <div className="button-span clearfix">
         <span className="delSpan" onClick={handleClick}>
           delete
         </span>
-        <span className="editSpan" onClick={handleEdit}>
-          edit
-        </span>
+        {isEditMode ? (
+          <span className="editSpan" onClick={handleEdit}>
+            save
+          </span>
+        ) : (
+          <span className="editSpan" onClick={() => setIsEditMode(true)}>
+            edit
+          </span>
+        )}
       </div>
-      <p onChange={(e) => setLoad(e.target.value)}>
+      <div className="titleDiv">
+        {isEditMode ? (
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        ) : (
+          <h4>{title}</h4>
+        )}
+      </div>
+      <p>
         <strong>Load (kg): </strong>
-        {workout.load}
+        {isEditMode ? (
+          <input
+            type="number"
+            value={load}
+            onChange={(e) => setLoad(e.target.value)}
+          />
+        ) : (
+          load
+        )}
       </p>
-      <p onChange={(e) => setReps(e.target.value)}>
+      <p>
         <strong>Reps: </strong>
-        {workout.reps}
+        {isEditMode ? (
+          <input
+            type="number"
+            value={reps}
+            onChange={(e) => setReps(e.target.value)}
+          />
+        ) : (
+          reps
+        )}
       </p>
       <p>
         {formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}
