@@ -1,4 +1,4 @@
-Workout Tracker
+# Workout Tracker
 
     The Workout Tracker is a small project designed to help you keep track of your workout sessions.
 
