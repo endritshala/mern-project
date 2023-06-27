@@ -21,9 +21,3 @@ The Workout Tracker project is built using the following technologies:
     Authentication: JSON Web Tokens (JWT)
     
 
-
-
-
-# License
-
-The Workout Tracker project is licensed under the MIT License. Feel free to use, modify, and distribute the code for personal or commercial purposes.
