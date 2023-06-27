@@ -20,7 +20,6 @@ The Workout Tracker project is built using the following technologies:
     
     Authentication: JSON Web Tokens (JWT)
     
-    Additional Libraries: Axios
 
 
 
